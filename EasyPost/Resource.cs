@@ -8,6 +8,9 @@ using System.Reflection;
 
 namespace EasyPost {
     public class Resource : IResource {
+
+        public ClientConfiguration clientConfiguration {set; get;}
+
         public static T Load<T>(string json) where T : Resource {
             return JsonConvert.DeserializeObject<T>(json);
         }

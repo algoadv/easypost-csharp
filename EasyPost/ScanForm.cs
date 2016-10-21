@@ -27,8 +27,8 @@ namespace EasyPost {
         /// <param name="parameters">
         /// </param>
         /// <returns>Instance of EasyPost.ScanForm</returns>
-        public static ScanFormList List(Dictionary<string, object> parameters = null) {
-            Request request = new Request("scan_forms");
+        public static ScanFormList List(Dictionary<string, object> parameters = null,ClientConfiguration clientConfiguration = null) {
+            Request request = new Request("scan_forms", clientConfiguration);
             request.AddQueryString(parameters ?? new Dictionary<string, object>());
 
             ScanFormList scanFormList = request.Execute<ScanFormList>();

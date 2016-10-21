@@ -32,8 +32,8 @@ namespace EasyPost {
         /// <param name="parameters">
         /// </param>
         /// <returns>Instance of EasyPost.ShipmentList</returns>
-        public static TrackerList List(Dictionary<string, object> parameters = null) {
-            Request request = new Request("trackers");
+        public static TrackerList List(Dictionary<string, object> parameters = null,ClientConfiguration clientConfiguration = null) {
+            Request request = new Request("trackers", clientConfiguration);
             request.AddQueryString(parameters ?? new Dictionary<string, object>());
 
             TrackerList trackerList = request.Execute<TrackerList>();
@@ -41,8 +41,8 @@ namespace EasyPost {
             return trackerList;
         }
 
-        public static Tracker Create(string carrier, string trackingCode) {
-            Request request = new Request("trackers", RestSharp.Method.POST);
+        public static Tracker Create(string carrier, string trackingCode,ClientConfiguration clientConfiguration) {
+            Request request = new Request("trackers", clientConfiguration,RestSharp.Method.POST);
             Dictionary<string, object> parameters = new Dictionary<string, object>() {
                 { "tracking_code", trackingCode }, { "carrier", carrier }
             };
@@ -57,8 +57,8 @@ namespace EasyPost {
         /// </summary>
         /// <param name="id">String representing a Tracker. Starts with "trk_".</param>
         /// <returns>EasyPost.Tracker instance.</returns>
-        public static Tracker Retrieve(string id) {
-            Request request = new Request("trackers/{id}");
+        public static Tracker Retrieve(string id,ClientConfiguration clientConfiguration = null) {
+            Request request = new Request("trackers/{id}", clientConfiguration);
             request.AddUrlSegment("id", id);
 
             return request.Execute<Tracker>();

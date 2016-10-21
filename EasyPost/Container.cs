@@ -21,8 +21,8 @@ namespace EasyPost {
         /// </summary>
         /// <param name="id">String representing a Container. Starts with "container_" if passing an id.</param>
         /// <returns>EasyPost.Container instance.</returns>
-        public static Container Retrieve(string id) {
-            Request request = new Request("containers/{id}");
+        public static Container Retrieve(string id,ClientConfiguration clientConfiguration) {
+            Request request = new Request("containers/{id}", clientConfiguration);
             request.AddUrlSegment("id", id);
 
             return request.Execute<Container>();
@@ -43,8 +43,8 @@ namespace EasyPost {
         /// All invalid keys will be ignored.
         /// </param>
         /// <returns>EasyPost.Container instance.</returns>
-        public static Container Create(Dictionary<string, object> parameters) {
-            Request request = new Request("containers", Method.POST);
+        public static Container Create(Dictionary<string, object> parameters, ClientConfiguration clientConfiguration = null) {
+            Request request = new Request("containers", clientConfiguration, Method.POST);
             request.AddBody(parameters, "container");
 
             return request.Execute<Container>();

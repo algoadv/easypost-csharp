@@ -27,13 +27,13 @@ namespace EasyPost {
         /// </summary>
         /// <param name="id">String representing a user. Starts with "user_".</param>
         /// <returns>EasyPost.User instance.</returns>
-        public static User Retrieve(string id = null) {
+        public static User Retrieve(string id = null,ClientConfiguration clientConfiguration = null) {
             Request request;
 
             if (id == null) {
-                request = new Request("users");
+                request = new Request("users", clientConfiguration);
             } else {
-                request = new Request("users/{id}");
+                request = new Request("users/{id}", clientConfiguration);
                 request.AddUrlSegment("id", id);
             }
 
@@ -49,8 +49,8 @@ namespace EasyPost {
         /// All invalid keys will be ignored.
         /// </param>
         /// <returns>EasyPost.User instance.</returns>
-        public static User Create(Dictionary<string, object> parameters) {
-            Request request = new Request("users", Method.POST);
+        public static User Create(Dictionary<string, object> parameters,ClientConfiguration clientConfiguration) {
+            Request request = new Request("users", clientConfiguration, Method.POST);
             request.AddBody(parameters, "user");
 
             return request.Execute<User>();
@@ -70,7 +70,7 @@ namespace EasyPost {
         /// All invalid keys will be ignored.
         /// </param>
         public void Update(Dictionary<string, object> parameters) {
-            Request request = new Request("users/{id}", Method.PUT);
+            Request request = new Request("users/{id}", clientConfiguration,Method.PUT);
             request.AddUrlSegment("id", id);
             request.AddBody(parameters, "user");
 
@@ -78,7 +78,7 @@ namespace EasyPost {
         }
 
         public void Destroy() {
-            Request request = new Request("users/{id}", Method.DELETE);
+            Request request = new Request("users/{id}", clientConfiguration, Method.DELETE);
             request.AddUrlSegment("id", id);
             request.Execute();
         }

@@ -23,8 +23,8 @@ namespace EasyPost {
         /// </summary>
         /// <param name="id">String representing a CustomsItem. Starts with "cstitem_".</param>
         /// <returns>EasyPost.CustomsItem instance.</returns>
-        public static CustomsItem Retrieve(string id) {
-            Request request = new Request("customs_items/{id}");
+        public static CustomsItem Retrieve(string id,ClientConfiguration clientConfiguration = null) {
+            Request request = new Request("customs_items/{id}", clientConfiguration);
             request.AddUrlSegment("id", id);
 
             return request.Execute<CustomsItem>();
@@ -44,8 +44,8 @@ namespace EasyPost {
         /// All invalid keys will be ignored.
         /// </param>
         /// <returns>EasyPost.CustomsItem instance.</returns>
-        public static CustomsItem Create(Dictionary<string, object> parameters) {
-            Request request = new Request("customs_items", Method.POST);
+        public static CustomsItem Create(Dictionary<string, object> parameters,ClientConfiguration clientConfiguration) {
+            Request request = new Request("customs_items", clientConfiguration,Method.POST);
             request.AddBody(parameters, "customs_item");
 
             return request.Execute<CustomsItem>();

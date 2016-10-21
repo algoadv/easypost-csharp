@@ -28,8 +28,8 @@ namespace EasyPost {
         /// </summary>
         /// <param name="id">String representing a Rate. Starts with "rate_".</param>
         /// <returns>EasyPost.Rate instance.</returns>
-        public static Rate Retrieve(string id) {
-            Request request = new Request("rates/{id}");
+        public static Rate Retrieve(string id,ClientConfiguration clientConfiguration = null) {
+            Request request = new Request("rates/{id}", clientConfiguration);
             request.AddUrlSegment("id", id);
 
             return request.Execute<Rate>();

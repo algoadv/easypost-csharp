@@ -25,8 +25,8 @@ namespace EasyPost {
         /// </summary>
         /// <param name="id">String representing a Batch. Starts with "batch_".</param>
         /// <returns>EasyPost.Batch instance.</returns>
-        public static Batch Retrieve(string id) {
-            Request request = new Request("batches/{id}");
+        public static Batch Retrieve(string id,ClientConfiguration clientConfiguration = null) {
+            Request request = new Request("batches/{id}", clientConfiguration);
             request.AddUrlSegment("id", id);
 
             return request.Execute<Batch>();
@@ -42,10 +42,10 @@ namespace EasyPost {
         /// All invalid keys will be ignored.
         /// </param>
         /// <returns>EasyPost.Batch instance.</returns>
-        public static Batch Create(Dictionary<string, object> parameters = null) {
+        public static Batch Create(Dictionary<string, object> parameters = null, ClientConfiguration clientConfiguration = null) {
             parameters = parameters ?? new Dictionary<string, object>();
 
-            Request request = new Request("batches", Method.POST);
+            Request request = new Request("batches", clientConfiguration, Method.POST);
             request.AddBody(parameters, "batch");
 
             return request.Execute<Batch>();
@@ -56,7 +56,7 @@ namespace EasyPost {
         /// </summary>
         /// <param name="shipmentIds">List of shipment ids to be added.</param>
         public void AddShipments(IEnumerable<string> shipmentIds) {
-            Request request = new Request("batches/{id}/add_shipments", Method.POST);
+            Request request = new Request("batches/{id}/add_shipments",this.clientConfiguration, Method.POST);
             request.AddUrlSegment("id", id);
 
             List<Dictionary<string, object>> body = shipmentIds.Select(shipmentId => new Dictionary<string, object>() { { "id", shipmentId } }).ToList();
@@ -78,7 +78,7 @@ namespace EasyPost {
         /// </summary>
         /// <param name="shipmentIds">List of shipment ids to be removed.</param>
         public void RemoveShipments(IEnumerable<string> shipmentIds) {
-            Request request = new Request("batches/{id}/remove_shipments", Method.POST);
+            Request request = new Request("batches/{id}/remove_shipments",this.clientConfiguration, Method.POST);
             request.AddUrlSegment("id", id);
 
             List<Dictionary<string, object>> body = shipmentIds.Select(shipmentId => new Dictionary<string, object>() { { "id", shipmentId } }).ToList();
@@ -99,7 +99,7 @@ namespace EasyPost {
         /// Purchase all shipments within a batch. The Batch's state must be "created" before purchasing.
         /// </summary>
         public void Buy() {
-            Request request = new Request("batches/{id}/buy", Method.POST);
+            Request request = new Request("batches/{id}/buy", this.clientConfiguration, Method.POST);
             request.AddUrlSegment("id", id);
 
             Merge(request.Execute<Batch>());
@@ -111,7 +111,7 @@ namespace EasyPost {
         /// <param name="fileFormat">Format to generate the label in. Valid formats: "pdf", "zpl" and "epl2".</param>
         /// <param name="orderBy">Optional parameter to order the generated label. Ex: "reference DESC"</param>
         public void GenerateLabel(string fileFormat, string orderBy = null) {
-            Request request = new Request("batches/{id}/label", Method.POST);
+            Request request = new Request("batches/{id}/label", this.clientConfiguration, Method.POST);
             request.AddUrlSegment("id", id);
 
             List<Tuple<string, string>> body = new List<Tuple<string, string>>() {
@@ -129,7 +129,7 @@ namespace EasyPost {
         /// Asychronously generate a scan from for the batch.
         /// </summary>
         public void GenerateScanForm() {
-            Request request = new Request("batches/{id}/scan_form", Method.POST);
+            Request request = new Request("batches/{id}/scan_form", this.clientConfiguration, Method.POST);
             request.AddUrlSegment("id", id);
 
             Merge(request.Execute<Batch>());

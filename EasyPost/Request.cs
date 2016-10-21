@@ -9,6 +9,8 @@ namespace EasyPost {
     public class Request {
         internal RestRequest restRequest;
 
+        private ClientConfiguration clientConfiguration = null;
+
         public string RootElement {
             get { return this.restRequest.RootElement; }
             set { this.restRequest.RootElement = value; }
@@ -18,18 +20,47 @@ namespace EasyPost {
             return request.restRequest;
         }
 
-        public Request(string IResource, Method method = Method.GET) {
+        public Request(string IResource, ClientConfiguration config, Method method = Method.GET) {
             restRequest = new RestRequest(IResource, method);
             restRequest.AddHeader("Accept", "application/json");
         }
 
         public T Execute<T>() where T : new() {
-            Client client = ClientManager.Build();
-            return client.Execute<T>(this);
+            Client client = null;
+            if (clientConfiguration == null)
+            {
+                client = ClientManager.Build();
+            }
+            else
+            {
+                client = new Client(clientConfiguration);
+            }
+             
+            T Result = client.Execute<T>(this);
+
+            // Copy Client Configuration To The New Created Resource, so the next requests, on the same object
+            // will still be executed using the same client
+
+            var ResultResource = Result as Resource;
+            if (ResultResource != null)
+            {
+                ResultResource.clientConfiguration = clientConfiguration;
+            }
+            return Result;
         }
 
-        public IRestResponse Execute() {
-            Client client = ClientManager.Build();
+        public IRestResponse Execute()
+        {
+            Client client = null;
+            if (clientConfiguration == null)
+            {
+                client = ClientManager.Build();
+            }
+            else
+            {
+                client = new Client(clientConfiguration);
+            }
+            
             return client.Execute(this);
         }
 

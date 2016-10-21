@@ -28,8 +28,8 @@ namespace EasyPost {
         /// </summary>
         /// <param name="id">String representing a Order. Starts with "order_" if passing an id.</param>
         /// <returns>EasyPost.Order instance.</returns>
-        public static Order Retrieve(string id) {
-            Request request = new Request("orders/{id}");
+        public static Order Retrieve(string id,ClientConfiguration clientConfiguration) {
+            Request request = new Request("orders/{id}", clientConfiguration);
             request.AddUrlSegment("id", id);
 
             return request.Execute<Order>();
@@ -54,8 +54,8 @@ namespace EasyPost {
         /// All invalid keys will be ignored.
         /// </param>
         /// <returns>EasyPost.Order instance.</returns>
-        public static Order Create(Dictionary<string, object> parameters) {
-            Request request = new Request("orders", Method.POST);
+        public static Order Create(Dictionary<string, object> parameters,ClientConfiguration clientConfiguration) {
+            Request request = new Request("orders", clientConfiguration, Method.POST);
             request.AddBody(parameters, "order");
 
             return request.Execute<Order>();
@@ -68,11 +68,11 @@ namespace EasyPost {
         public void Create() {
             if (id != null)
                 throw new ResourceAlreadyCreated();
-            Merge(sendCreate(this.AsDictionary()));
+            Merge(sendCreate(this.AsDictionary(),this.clientConfiguration));
         }
 
-        private static Order sendCreate(Dictionary<string, object> parameters) {
-            Request request = new Request("orders", Method.POST);
+        private static Order sendCreate(Dictionary<string, object> parameters,ClientConfiguration clientConfiguration) {
+            Request request = new Request("orders", clientConfiguration, Method.POST);
             request.AddBody(parameters, "order");
 
             return request.Execute<Order>();
@@ -84,7 +84,7 @@ namespace EasyPost {
         /// <param name="carrier">The carrier to purchase a shipment from.</param>
         /// <param name="service">The service to purchase.</param>
         public void Buy(string carrier, string service) {
-            Request request = new Request("orders/{id}/buy", Method.POST);
+            Request request = new Request("orders/{id}/buy", this.clientConfiguration, Method.POST);
             request.AddUrlSegment("id", id);
             request.AddBody(new List<Tuple<string, string>>() { new Tuple<string, string>("carrier", carrier), new Tuple<string, string>("service", service) });
 
